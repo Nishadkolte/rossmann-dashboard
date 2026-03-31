@@ -10,9 +10,16 @@ interface Props {
   data: { storeType: string; promoOff: number; promoOn: number; predicted: number }[];
 }
 
+interface TypeTooltipItem {
+  name: string;
+  value: number;
+  color: string;
+  payload: { promoOff: number; promoOn: number; predicted: number };
+}
+
 function CustomTooltip({ active, payload, label }: {
   active?: boolean;
-  payload?: { name: string; value: number; color: string }[];
+  payload?: TypeTooltipItem[];
   label?: string;
 }) {
   if (!active || !payload?.length) return null;

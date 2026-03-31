@@ -17,9 +17,15 @@ const TYPE_COLORS: Record<string, string> = {
   'Type D': '#8b5cf6',
 };
 
+interface PromoTooltipItem {
+  name: string;
+  value: number;
+  payload: { liftPct: number; withoutPromo: number; withPromo: number };
+}
+
 function CustomTooltip({ active, payload, label }: {
   active?: boolean;
-  payload?: { name: string; value: number }[];
+  payload?: PromoTooltipItem[];
   label?: string;
 }) {
   if (!active || !payload?.length) return null;
