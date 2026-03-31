@@ -1,4 +1,12 @@
-// app/page.tsx  — Updated with AI Forecast Section
+// app/page.tsx — Add MapSection import and usage
+// Find the line:   import ForecastSection from '@/components/ForecastSection';
+// Add below it:    import MapSection from '@/components/MapSection';
+//
+// Find the line:   <ForecastSection />
+// Add below it:    <MapSection />
+//
+// ── The complete updated page.tsx is below ──────────────────────
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -7,15 +15,16 @@ import {
   Percent, Activity, ShoppingBag,
 } from 'lucide-react';
 
-import Navbar         from '@/components/Navbar';
-import HeroSection    from '@/components/HeroSection';
-import InsightsPanel  from '@/components/InsightsPanel';
-import Footer         from '@/components/Footer';
+import Navbar          from '@/components/Navbar';
+import HeroSection     from '@/components/HeroSection';
+import InsightsPanel   from '@/components/InsightsPanel';
+import Footer          from '@/components/Footer';
 import ForecastSection from '@/components/ForecastSection';
+import MapSection      from '@/components/MapSection';        // ← NEW
 
-import KpiCard        from '@/components/ui/KpiCard';
-import FilterBar      from '@/components/ui/FilterBar';
-import SectionHeader  from '@/components/ui/SectionHeader';
+import KpiCard         from '@/components/ui/KpiCard';
+import FilterBar       from '@/components/ui/FilterBar';
+import SectionHeader   from '@/components/ui/SectionHeader';
 
 import StoreTypeChart       from '@/components/charts/StoreTypeChart';
 import AssortmentChart      from '@/components/charts/AssortmentChart';
@@ -57,11 +66,11 @@ export default function DashboardPage() {
     return data;
   }, [storeTypeFilter, assortmentFilter, promo2Filter]);
 
-  const filteredTotal      = filteredStoreTypes.reduce((s, d) => s + d.count, 0);
-  const filteredPromo2Pct  = filteredTotal > 0
+  const filteredTotal     = filteredStoreTypes.reduce((s, d) => s + d.count, 0);
+  const filteredPromo2Pct = filteredTotal > 0
     ? (filteredStoreTypes.reduce((s, d) => s + d.promo2, 0) / filteredTotal * 100).toFixed(1)
     : '0.0';
-  const filteredAvgDist    = filteredTotal > 0
+  const filteredAvgDist   = filteredTotal > 0
     ? filteredStoreTypes.reduce((s, d) => s + d.avgDist * d.count, 0) / filteredTotal
     : 0;
 
@@ -77,20 +86,20 @@ export default function DashboardPage() {
       <Navbar />
       <HeroSection />
 
-      {/* ── KPI Cards ── */}
+      {/* KPI Cards */}
       <section id="overview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4">
         <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-5">Dataset Summary</p>
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-          <KpiCard title="Total Stores"      value={formatNumber(filteredTotal || KPI.totalStores)} subtext="Rossmann locations in Germany"   icon={<Store size={18} />}    accentColor="bg-blue-500/10"   iconColor="text-blue-400" />
-          <KpiCard title="Test Records"      value={formatNumber(KPI.testRecords)}                  subtext="Aug 1 – Sep 17, 2015"            icon={<BarChart2 size={18} />} accentColor="bg-purple-500/10" iconColor="text-purple-400" />
-          <KpiCard title="Store Open Rate"   value={formatPct(KPI.openRate)}                        subtext="Of test period store-days"       icon={<Activity size={18} />}  accentColor="bg-emerald-500/10" iconColor="text-emerald-400" trend={{ label: 'vs 100% target', positive: false }} />
-          <KpiCard title="Promo Active"      value={formatPct(KPI.promoRate)}                       subtext="Days with active promo"          icon={<Percent size={18} />}   accentColor="bg-amber-500/10"  iconColor="text-amber-400" />
-          <KpiCard title="Promo2 Enrolled"   value={`${filteredPromo2Pct}%`}                        subtext="Stores on rolling promo"         icon={<TrendingUp size={18} />} accentColor="bg-cyan-500/10"  iconColor="text-cyan-400" />
-          <KpiCard title="Avg Comp. Distance" value={formatDistance(filteredAvgDist || KPI.avgCompDist)} subtext="Nearest competitor store"   icon={<MapPin size={18} />}   accentColor="bg-rose-500/10"  iconColor="text-rose-400" />
+          <KpiCard title="Total Stores"       value={formatNumber(filteredTotal || KPI.totalStores)} subtext="Rossmann locations in Germany"   icon={<Store size={18} />}     accentColor="bg-blue-500/10"    iconColor="text-blue-400" />
+          <KpiCard title="Test Records"       value={formatNumber(KPI.testRecords)}                  subtext="Aug 1 – Sep 17, 2015"            icon={<BarChart2 size={18} />}  accentColor="bg-purple-500/10"  iconColor="text-purple-400" />
+          <KpiCard title="Store Open Rate"    value={formatPct(KPI.openRate)}                        subtext="Of test period store-days"       icon={<Activity size={18} />}   accentColor="bg-emerald-500/10" iconColor="text-emerald-400" trend={{ label: 'vs 100% target', positive: false }} />
+          <KpiCard title="Promo Active"       value={formatPct(KPI.promoRate)}                       subtext="Days with active promo"          icon={<Percent size={18} />}    accentColor="bg-amber-500/10"   iconColor="text-amber-400" />
+          <KpiCard title="Promo2 Enrolled"    value={`${filteredPromo2Pct}%`}                        subtext="Stores on rolling promo"         icon={<TrendingUp size={18} />} accentColor="bg-cyan-500/10"    iconColor="text-cyan-400" />
+          <KpiCard title="Avg Comp. Distance" value={formatDistance(filteredAvgDist || KPI.avgCompDist)} subtext="Nearest competitor store"  icon={<MapPin size={18} />}    accentColor="bg-rose-500/10"    iconColor="text-rose-400" />
         </div>
       </section>
 
-      {/* ── Filter Bar ── */}
+      {/* Filter Bar */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <FilterBar
           storeTypeFilter={storeTypeFilter}   setStoreTypeFilter={setStoreTypeFilter}
@@ -101,7 +110,7 @@ export default function DashboardPage() {
 
       <InsightsPanel />
 
-      {/* ── Store Intelligence ── */}
+      {/* Store Intelligence */}
       <section id="store-intel" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <SectionHeader title="Store Intelligence" description="Distribution of store formats, assortment levels, and network composition." icon={<ShoppingBag size={16} />} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -126,7 +135,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* ── Promotions ── */}
+      {/* Promotions */}
       <section id="promotions" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <SectionHeader title="Promotional Strategy" description="Promo2 enrolment patterns, seasonal promo intervals, and day-of-week promo activity." icon={<TrendingUp size={16} />} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -150,7 +159,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* ── Operations ── */}
+      {/* Operations */}
       <section id="operations" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <SectionHeader title="Operational Overview" description="Store open/closed patterns during the Aug–Sep 2015 forecast window." icon={<Calendar size={16} />} />
         <div className="card">
@@ -159,10 +168,10 @@ export default function DashboardPage() {
           <OpenStoresTimeline data={openByDateData} />
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { label:'Peak Open',   value:'856 stores', sub:'Weekdays'              },
-              { label:'Sunday Open', value:'27 stores',  sub:'Only petrol stations'  },
-              { label:'Test Days',   value:'48 days',    sub:'Aug 1 – Sep 17'        },
-              { label:'Holiday Dip', value:'Aug 15',     sub:'154 stores closed'     },
+              { label:'Peak Open',   value:'856 stores', sub:'Weekdays'         },
+              { label:'Sunday Open', value:'27 stores',  sub:'Only petrol stations' },
+              { label:'Test Days',   value:'48 days',    sub:'Aug 1 – Sep 17'   },
+              { label:'Holiday Dip', value:'Aug 15',     sub:'154 stores closed'},
             ].map((s) => (
               <div key={s.label} className="bg-slate-700/40 rounded-xl p-3 text-center">
                 <p className="text-lg font-bold text-slate-100">{s.value}</p>
@@ -174,9 +183,9 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* ── Competition ── */}
+      {/* Competition */}
       <section id="competition" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <SectionHeader title="Competitive Landscape" description="How near are rival stores? Competition distance distribution and store-type exposure." icon={<MapPin size={16} />} />
+        <SectionHeader title="Competitive Landscape" description="How near are rival stores?" icon={<MapPin size={16} />} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card">
             <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -202,9 +211,14 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 🤖 AI Forecast Section (NEW) ── */}
+      {/* AI Forecast */}
       <div className="border-t border-slate-700/50 mt-4">
         <ForecastSection />
+      </div>
+
+      {/* 🗺️ Store Map (NEW) */}
+      <div className="border-t border-slate-700/50 mt-4">
+        <MapSection />
       </div>
 
       <Footer />

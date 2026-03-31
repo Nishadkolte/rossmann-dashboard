@@ -1,18 +1,19 @@
-// components/Navbar.tsx
+// components/Navbar.tsx — Updated with Map nav link
 'use client';
 
 import { useState } from 'react';
 import {
-  BarChart2, Store, TrendingUp, Calendar, MapPin, Menu, X,
+  BarChart2, Store, TrendingUp, Calendar, MapPin, Brain, Map, Menu, X,
 } from 'lucide-react';
-import clsx from 'clsx';
 
 const navItems = [
-  { label: 'Overview',    href: '#overview',     icon: <BarChart2 size={15} /> },
-  { label: 'Store Intel', href: '#store-intel',  icon: <Store size={15} />     },
-  { label: 'Promotions',  href: '#promotions',   icon: <TrendingUp size={15} />},
-  { label: 'Operations',  href: '#operations',   icon: <Calendar size={15} />  },
-  { label: 'Competition', href: '#competition',  icon: <MapPin size={15} />    },
+  { label: 'Overview',    href: '#overview',    icon: <BarChart2 size={15} /> },
+  { label: 'Store Intel', href: '#store-intel', icon: <Store size={15} />     },
+  { label: 'Promotions',  href: '#promotions',  icon: <TrendingUp size={15} />},
+  { label: 'Operations',  href: '#operations',  icon: <Calendar size={15} />  },
+  { label: 'Competition', href: '#competition', icon: <MapPin size={15} />    },
+  { label: 'AI Forecast', href: '#forecast',    icon: <Brain size={15} />     },
+  { label: 'Store Map',   href: '#map',         icon: <Map size={15} />       },
 ];
 
 export default function Navbar() {
@@ -34,7 +35,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <a
                 key={item.label}
@@ -48,26 +49,24 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Badge */}
-          <div className="hidden md:flex items-center gap-2">
-            <span className="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          {/* Badge + mobile toggle */}
+          <div className="flex items-center gap-3">
+            <span className="hidden md:flex badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-              Live Data
+              Live
             </span>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden p-2 text-slate-400 hover:text-white"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
-
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 text-slate-400 hover:text-white"
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="md:hidden py-3 border-t border-slate-700 flex flex-col gap-1">
+          <div className="lg:hidden py-3 border-t border-slate-700 flex flex-col gap-1">
             {navItems.map((item) => (
               <a
                 key={item.label}
