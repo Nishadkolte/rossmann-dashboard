@@ -166,7 +166,7 @@ export default function ChatBot() {
                         flex flex-col rounded-2xl shadow-2xl overflow-hidden
                         border border-slate-700 bg-slate-900
                         animate-fade-in"
-             style={{ height: '560px' }}>
+             style={{ height: '580px', display: 'flex', flexDirection: 'column' }}>
 
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3
@@ -200,7 +200,7 @@ export default function ChatBot() {
           </div>
 
           {/* Messages area */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+          <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-4" style={{ minHeight: 0 }}>
 
             {/* Welcome message */}
             {messages.length === 0 && (
