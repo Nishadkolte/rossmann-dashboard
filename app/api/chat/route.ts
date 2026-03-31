@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
         'anthropic-version':    '2023-06-01',
       },
       body: JSON.stringify({
-        model:      'claude-opus-4-6',
+        model:      'claude-haiku-4-5-20251001',
         max_tokens: 1024,
         system:     SYSTEM_PROMPT,
         messages:   messages,
@@ -105,9 +105,12 @@ export async function POST(req: NextRequest) {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('Anthropic API error:', error);
-      return NextResponse.json({ error: 'AI service error' }, { status: 502 });
+      const errorText = await response.text();
+      console.error('Anthropic API error:', response.status, errorText);
+      return NextResponse.json(
+        { error: `Anthropic error ${response.status}` },
+        { status: 502 }
+      );
     }
 
     const data = await response.json();
