@@ -8,7 +8,7 @@ import { storeGeoData } from '@/utils/storeGeoData';
 
 // Dynamically import the map so Leaflet only loads on client (no SSR)
 const StoreMap = dynamic(
-  () => import('@/components/charts/StoreMap'),
+  () => import('@/components/StoreMap'),
   {
     ssr: false,
     loading: () => (
