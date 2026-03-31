@@ -19,9 +19,16 @@ interface Props {
   showPromo: boolean;
 }
 
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+  color: string;
+  payload: { promo: number; schoolHoliday: number };
+}
+
 function CustomTooltip({ active, payload, label }: {
   active?: boolean;
-  payload?: { name: string; value: number; color: string }[];
+  payload?: TooltipPayloadItem[];
   label?: string;
 }) {
   if (!active || !payload?.length) return null;
