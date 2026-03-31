@@ -1,25 +1,21 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
 import './globals.css';
+import ChatBot from '@/components/ChatBot';
 
 export const metadata: Metadata = {
   title: 'Rossmann Retail Intelligence Dashboard',
   description:
-    'An end-to-end analytics dashboard exploring Rossmann store attributes, ' +
-    'promotional strategies, competition landscape, and operational patterns ' +
-    'across 1,115 stores in Germany (Aug–Sep 2015 forecast period).',
+    'End-to-end retail analytics dashboard with AI forecasting, model comparison, ' +
+    'interactive store map, and Claude-powered chatbot. Built with Next.js + Recharts.',
   keywords: [
-    'retail analytics',
-    'Rossmann',
-    'sales dashboard',
-    'Next.js',
-    'Recharts',
-    'data visualization',
+    'retail analytics', 'Rossmann', 'LightGBM', 'XGBoost', 'Prophet', 'SARIMA',
+    'Next.js', 'Recharts', 'data visualization', 'AI chatbot',
   ],
   authors: [{ name: 'Rossmann Analytics Team' }],
   openGraph: {
     title: 'Rossmann Retail Intelligence Dashboard',
-    description: 'End-to-end retail analytics built with Next.js + Recharts',
+    description: 'End-to-end retail analytics with AI forecasting & chatbot',
     type: 'website',
   },
 };
@@ -33,6 +29,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-slate-900 antialiased">
         {children}
+        {/* ── Floating AI Chatbot — visible on all pages ── */}
+        <ChatBot />
       </body>
     </html>
   );
