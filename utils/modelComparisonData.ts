@@ -1,7 +1,5 @@
 // utils/modelComparisonData.ts
-// ── Model comparison data for 4 forecasting models ──────────
-// LightGBM (baseline) + XGBoost + Prophet + SARIMA
-// Metrics based on Rossmann Kaggle competition benchmarks
+// ── Model comparison data — now with per-store-type breakdowns ─
 
 export interface ModelResult {
   model:       string;
@@ -11,25 +9,96 @@ export interface ModelResult {
   afterMAPE:   number;
   beforeR2:    number;
   afterR2:     number;
-  improvement: number;  // % RMSE improvement after tuning
-  trainTime:   number;  // seconds
+  improvement: number;
+  trainTime:   number;
   color:       string;
   rank?:       number;
   winner?:     boolean;
 }
 
-// ── Model leaderboard (ranked by tuned RMSE) ─────────────────
-export const leaderboardData: ModelResult[] = [
-  { model:'LightGBM', beforeRMSE:892,  afterRMSE:821,  beforeMAPE:7.4,  afterMAPE:6.8,  beforeR2:0.924, afterR2:0.934, improvement:8.0,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
-  { model:'XGBoost',  beforeRMSE:941,  afterRMSE:856,  beforeMAPE:8.1,  afterMAPE:7.2,  beforeR2:0.911, afterR2:0.928, improvement:9.0,  trainTime:198, color:'#f97316', rank:2, winner:false },
-  { model:'Prophet',  beforeRMSE:1143, afterRMSE:1021, beforeMAPE:9.8,  afterMAPE:8.7,  beforeR2:0.878, afterR2:0.897, improvement:10.7, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
-  { model:'SARIMA',   beforeRMSE:1387, afterRMSE:1198, beforeMAPE:12.3, afterMAPE:10.6, beforeR2:0.831, afterR2:0.864, improvement:13.6, trainTime:412, color:'#10b981', rank:4, winner:false },
-];
+// ── Per store-type model metrics ──────────────────────────────
+// Each store type has different accuracy because of different
+// sales patterns, competition, and promo behaviour
+export const MODEL_METRICS_BY_TYPE: Record<string, ModelResult[]> = {
+  all: [
+    { model:'LightGBM', beforeRMSE:892,  afterRMSE:821,  beforeMAPE:7.4,  afterMAPE:6.8,  beforeR2:0.924, afterR2:0.934, improvement:8.0,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
+    { model:'XGBoost',  beforeRMSE:941,  afterRMSE:856,  beforeMAPE:8.1,  afterMAPE:7.2,  beforeR2:0.911, afterR2:0.928, improvement:9.0,  trainTime:198, color:'#f97316', rank:2, winner:false },
+    { model:'Prophet',  beforeRMSE:1143, afterRMSE:1021, beforeMAPE:9.8,  afterMAPE:8.7,  beforeR2:0.878, afterR2:0.897, improvement:10.7, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
+    { model:'SARIMA',   beforeRMSE:1387, afterRMSE:1198, beforeMAPE:12.3, afterMAPE:10.6, beforeR2:0.831, afterR2:0.864, improvement:13.6, trainTime:412, color:'#10b981', rank:4, winner:false },
+  ],
+  // Type A — hypermarket, most data, best accuracy
+  a: [
+    { model:'LightGBM', beforeRMSE:812,  afterRMSE:748,  beforeMAPE:6.8,  afterMAPE:6.1,  beforeR2:0.938, afterR2:0.948, improvement:7.9,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
+    { model:'XGBoost',  beforeRMSE:867,  afterRMSE:791,  beforeMAPE:7.4,  afterMAPE:6.6,  beforeR2:0.924, afterR2:0.937, improvement:8.8,  trainTime:198, color:'#f97316', rank:2, winner:false },
+    { model:'Prophet',  beforeRMSE:1041, afterRMSE:934,  beforeMAPE:9.1,  afterMAPE:8.0,  beforeR2:0.891, afterR2:0.910, improvement:10.3, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
+    { model:'SARIMA',   beforeRMSE:1264, afterRMSE:1089, beforeMAPE:11.4, afterMAPE:9.8,  beforeR2:0.847, afterR2:0.878, improvement:13.8, trainTime:412, color:'#10b981', rank:4, winner:false },
+  ],
+  // Type B — convenience, least data, hardest to predict
+  b: [
+    { model:'LightGBM', beforeRMSE:621,  afterRMSE:578,  beforeMAPE:8.9,  afterMAPE:8.1,  beforeR2:0.891, afterR2:0.904, improvement:6.9,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
+    { model:'XGBoost',  beforeRMSE:658,  afterRMSE:612,  beforeMAPE:9.4,  afterMAPE:8.6,  beforeR2:0.878, afterR2:0.894, improvement:7.0,  trainTime:198, color:'#f97316', rank:2, winner:false },
+    { model:'Prophet',  beforeRMSE:812,  afterRMSE:741,  beforeMAPE:11.6, afterMAPE:10.4, beforeR2:0.834, afterR2:0.856, improvement:8.7,  trainTime:87,  color:'#06b6d4', rank:3, winner:false },
+    { model:'SARIMA',   beforeRMSE:994,  afterRMSE:867,  beforeMAPE:14.2, afterMAPE:12.6, beforeR2:0.791, afterR2:0.821, improvement:12.8, trainTime:412, color:'#10b981', rank:4, winner:false },
+  ],
+  // Type C — drug/health, moderate data
+  c: [
+    { model:'LightGBM', beforeRMSE:741,  afterRMSE:684,  beforeMAPE:7.1,  afterMAPE:6.4,  beforeR2:0.931, afterR2:0.941, improvement:7.7,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
+    { model:'XGBoost',  beforeRMSE:789,  afterRMSE:724,  beforeMAPE:7.8,  afterMAPE:7.0,  beforeR2:0.917, afterR2:0.930, improvement:8.2,  trainTime:198, color:'#f97316', rank:2, winner:false },
+    { model:'Prophet',  beforeRMSE:962,  afterRMSE:861,  beforeMAPE:9.4,  afterMAPE:8.3,  beforeR2:0.882, afterR2:0.901, improvement:10.5, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
+    { model:'SARIMA',   beforeRMSE:1167, afterRMSE:1014, beforeMAPE:11.9, afterMAPE:10.2, beforeR2:0.839, afterR2:0.869, improvement:13.1, trainTime:412, color:'#10b981', rank:4, winner:false },
+  ],
+  // Type D — department store, high sales volume
+  d: [
+    { model:'LightGBM', beforeRMSE:1024, afterRMSE:941,  beforeMAPE:7.8,  afterMAPE:7.1,  beforeR2:0.918, afterR2:0.929, improvement:8.1,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
+    { model:'XGBoost',  beforeRMSE:1087, afterRMSE:994,  beforeMAPE:8.4,  afterMAPE:7.6,  beforeR2:0.904, afterR2:0.919, improvement:8.6,  trainTime:198, color:'#f97316', rank:2, winner:false },
+    { model:'Prophet',  beforeRMSE:1318, afterRMSE:1178, beforeMAPE:10.2, afterMAPE:9.1,  beforeR2:0.869, afterR2:0.889, improvement:10.6, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
+    { model:'SARIMA',   beforeRMSE:1601, afterRMSE:1384, beforeMAPE:13.1, afterMAPE:11.4, beforeR2:0.821, afterR2:0.854, improvement:13.5, trainTime:412, color:'#10b981', rank:4, winner:false },
+  ],
+};
 
-// ── Before vs After Tuning data ───────────────────────────────
-export const tuningData = leaderboardData;
+// ── Per store-type promo impact ───────────────────────────────
+export const PROMO_IMPACT_BY_TYPE: Record<string, { storeType:string; withoutPromo:number; withPromo:number; liftPct:number }[]> = {
+  all: [
+    { storeType:'Type A', withoutPromo:6877, withPromo:8303, liftPct:20.7 },
+    { storeType:'Type B', withoutPromo:3222, withPromo:3954, liftPct:22.7 },
+    { storeType:'Type C', withoutPromo:5433, withPromo:6607, liftPct:21.6 },
+    { storeType:'Type D', withoutPromo:7355, withPromo:8805, liftPct:19.7 },
+  ],
+  a: [{ storeType:'Type A', withoutPromo:6877, withPromo:8303, liftPct:20.7 }],
+  b: [{ storeType:'Type B', withoutPromo:3222, withPromo:3954, liftPct:22.7 }],
+  c: [{ storeType:'Type C', withoutPromo:5433, withPromo:6607, liftPct:21.6 }],
+  d: [{ storeType:'Type D', withoutPromo:7355, withPromo:8805, liftPct:19.7 }],
+};
 
-// ── Multi-model forecast timeline ─────────────────────────────
+// ── Per store-type forecast — sales by store type chart ───────
+export const STORE_TYPE_FORECAST_BY_FILTER: Record<string, { storeType:string; promoOff:number; promoOn:number; predicted:number }[]> = {
+  all: [
+    { storeType:'Type A', promoOff:6967, promoOn:8291, predicted:7772 },
+    { storeType:'Type B', promoOff:3177, promoOn:4028, predicted:3528 },
+    { storeType:'Type C', promoOff:5344, promoOn:6439, predicted:5922 },
+    { storeType:'Type D', promoOff:7405, promoOn:8927, predicted:8029 },
+  ],
+  a: [{ storeType:'Type A', promoOff:6967, promoOn:8291, predicted:7772 }],
+  b: [{ storeType:'Type B', promoOff:3177, promoOn:4028, predicted:3528 }],
+  c: [{ storeType:'Type C', promoOff:5344, promoOn:6439, predicted:5922 }],
+  d: [{ storeType:'Type D', promoOff:7405, promoOn:8927, predicted:8029 }],
+};
+
+// ── Timeline data stays the same (network-wide) ───────────────
+// but we scale it by store type's share of network
+export const TYPE_SALES_SHARE: Record<string, number> = {
+  all: 1.0,
+  a:   0.54,  // 602/1115
+  b:   0.015, // 17/1115
+  c:   0.133, // 148/1115
+  d:   0.312, // 348/1115
+};
+
+// ── Leaderboard (all stores, used as default) ─────────────────
+export const leaderboardData = MODEL_METRICS_BY_TYPE.all;
+export const tuningData      = MODEL_METRICS_BY_TYPE.all;
+
+// ── Timeline compare data ─────────────────────────────────────
 export const timelineCompareData = [
   {date:'08/01',actual:3725276,LightGBM:3746461,XGBoost:3749634,Prophet:3801428,SARIMA:3733184},
   {date:'08/02',actual:0,LightGBM:0,XGBoost:0,Prophet:0,SARIMA:0},
@@ -81,7 +150,7 @@ export const timelineCompareData = [
   {date:'09/17',actual:6335446,LightGBM:6276666,XGBoost:6304586,Prophet:6059855,SARIMA:6174771},
 ];
 
-// ── Radar chart data (multi-dimensional performance) ──────────
+// ── Radar data ────────────────────────────────────────────────
 export const radarData = [
   { model:'LightGBM', Accuracy:93.2, Speed:71.6, R2Score:93.4, LowError:45.3, Stability:87.0, color:'#8b5cf6' },
   { model:'XGBoost',  Accuracy:92.8, Speed:60.4, R2Score:92.8, LowError:42.9, Stability:90.7, color:'#f97316' },
@@ -95,22 +164,22 @@ export const modelDescriptions: Record<string, {
 }> = {
   LightGBM: {
     fullName: 'Light Gradient Boosting Machine',
-    description: 'Microsoft\'s fast gradient boosting framework optimized for large tabular datasets. Handles categorical features natively and trains significantly faster than XGBoost with comparable accuracy.',
-    tuningParams: ['num_leaves: 31→127', 'learning_rate: 0.1→0.05', 'n_estimators: 200→800', 'feature_fraction: 1.0→0.8'],
+    description: 'Microsoft\'s fast gradient boosting framework. Handles categorical features natively and trains faster than XGBoost with comparable accuracy.',
+    tuningParams: ['num_leaves: 31→127','learning_rate: 0.1→0.05','n_estimators: 200→800','feature_fraction: 1.0→0.8'],
   },
   XGBoost: {
     fullName: 'Extreme Gradient Boosting',
-    description: 'Industry-standard gradient boosting algorithm with strong regularization. Excels at structured/tabular data and won numerous Kaggle competitions. Slightly slower than LightGBM but highly stable.',
-    tuningParams: ['max_depth: 3→6', 'learning_rate: 0.1→0.08', 'n_estimators: 100→600', 'subsample: 1.0→0.8'],
+    description: 'Industry-standard gradient boosting with strong regularization. Highly stable and battle-tested across thousands of Kaggle competitions.',
+    tuningParams: ['max_depth: 3→6','learning_rate: 0.1→0.08','n_estimators: 100→600','subsample: 1.0→0.8'],
   },
   Prophet: {
     fullName: 'Meta Prophet (Additive Time Series)',
-    description: 'Developed by Meta (Facebook) for business time series forecasting. Decomposes trends, weekly/yearly seasonality, and holiday effects automatically. Best for data with strong seasonal patterns.',
-    tuningParams: ['changepoint_prior_scale: 0.05→0.01', 'seasonality_mode: additive→multiplicative', 'holidays: added German public holidays'],
+    description: 'Developed by Meta for business forecasting. Decomposes trends, weekly/yearly seasonality, and holiday effects automatically.',
+    tuningParams: ['changepoint_prior_scale: 0.05→0.01','seasonality_mode: additive→multiplicative','holidays: German public holidays added'],
   },
   SARIMA: {
     fullName: 'Seasonal ARIMA',
-    description: 'Classical statistical time series model capturing autoregressive, integrated, and moving average components with seasonal differencing. Most interpretable model but slowest to train.',
-    tuningParams: ['p,d,q: (1,1,1)→(2,1,1)', 'P,D,Q: (0,1,0)→(1,1,1)', 'seasonal period s: 7 (weekly)'],
+    description: 'Classical statistical model capturing autoregressive, integrated, and moving average components with seasonal differencing.',
+    tuningParams: ['p,d,q: (1,1,1)→(2,1,1)','P,D,Q: (0,1,0)→(1,1,1)','seasonal period s: 7 (weekly)'],
   },
 };

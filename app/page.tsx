@@ -206,7 +206,7 @@ export default function DashboardPage() {
 
       {/* 🧪 Model Comparison (NEW) */}
       <div className="border-t border-slate-700/50 mt-4">
-        <ModelComparisonSection />
+        <ModelComparisonSection storeTypeFilter={storeTypeFilter} />
       </div>
 
       {/* 🗺️ Store Map */}
