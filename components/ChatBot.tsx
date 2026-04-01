@@ -12,12 +12,12 @@ interface Message {
 
 // ── GIF Library ───────────────────────────────────────────────
 const GIFS = {
-  idle:      'https://media3.giphy.com/media/13Uqp5IGFpmDle/giphy.gif',
-  excited:   'https://media4.giphy.com/media/MBU1IKPY441Q4/giphy.gif',
-  thinking:  'https://media1.giphy.com/media/j1AeED5w0xmVy/giphy.gif',
-  analytics: 'https://media4.giphy.com/media/jG186kNLKs6TS/giphy.gif',
-  error:     'https://media2.giphy.com/media/R548B8WxpUTsI/giphy.gif',
-  store:     'https://media1.giphy.com/media/j1AeED5w0xmVy/giphy.gif',
+  idle:      '/gifs/idle.gif',
+  excited:   '/gifs/excited.gif',
+  thinking:  '/gifs/thinking.gif',
+  analytics: '/gifs/analytics.gif',
+  error:     '/gifs/error.gif',
+  store:     '/gifs/thinking.gif',
 };
 
 type GifMood = keyof typeof GIFS;
@@ -158,7 +158,7 @@ export default function ChatBot() {
           filter:'drop-shadow(0 6px 20px rgba(200,130,50,0.5))',
         }}>
         <div style={{ position:'relative' }}>
-          <img key={gifKey} src={gif} alt="Doggo AI"
+          <img key={gifKey} src={gif} alt="Doggo AI" referrerPolicy="no-referrer"
             style={{ ...avatarStyle(72, color),
               transition:'transform 0.2s',
               transform: isOpen ? 'scale(0.9)' : 'scale(1)',
@@ -202,7 +202,7 @@ export default function ChatBot() {
             borderBottom:'1px solid #2d3748', flexShrink:0,
           }}>
             <div style={{ position:'relative', flexShrink:0 }}>
-              <img key={`h-${gifKey}`} src={gif} alt="Doggo"
+              <img key={`h-${gifKey}`} src={gif} alt="Doggo" referrerPolicy="no-referrer"
                 style={avatarStyle(48, color)}/>
               <div style={{ position:'absolute', bottom:'1px', right:'1px',
                 width:'12px', height:'12px', borderRadius:'50%',
@@ -230,7 +230,7 @@ export default function ChatBot() {
 
             {messages.length === 0 && (
               <div style={{ display:'flex', gap:'10px', alignItems:'flex-start' }}>
-                <img src={GIFS.idle} alt="Doggo"
+                <img src={GIFS.idle} alt="Doggo" referrerPolicy="no-referrer"
                   style={avatarStyle(32, '#e8a850')}/>
                 <div style={{ background:'#1e293b', border:'1px solid #334155',
                   borderRadius:'16px', borderTopLeftRadius:'4px',
@@ -255,7 +255,7 @@ export default function ChatBot() {
               }}>
                 {msg.role === 'assistant' ? (
                   <img src={i === messages.length - 1 ? gif : GIFS.idle}
-                    alt="Doggo" style={avatarStyle(30, i === messages.length - 1 ? color : '#e8a850')}/>
+                    alt="Doggo" referrerPolicy="no-referrer" style={avatarStyle(30, i === messages.length - 1 ? color : '#e8a850')}/>
                 ) : (
                   <div style={{ width:'30px', height:'30px', borderRadius:'50%',
                     background:'#1d4ed8', display:'flex', alignItems:'center',
@@ -278,7 +278,7 @@ export default function ChatBot() {
 
             {loading && (
               <div style={{ display:'flex', gap:'10px', alignItems:'flex-start' }}>
-                <img key={`t-${gifKey}`} src={GIFS.thinking} alt="thinking"
+                <img key={`t-${gifKey}`} src={GIFS.thinking} alt="thinking" referrerPolicy="no-referrer"
                   style={avatarStyle(30, '#f59e0b')}/>
                 <div style={{ background:'#1e293b', border:'1px solid #334155',
                   borderRadius:'16px', borderTopLeftRadius:'4px',
