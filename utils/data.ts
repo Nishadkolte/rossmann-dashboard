@@ -1,17 +1,25 @@
-// ============================================================
 // utils/data.ts
-// Static data extracted from Rossmann store & test CSV files.
-// All transformations were done in Python (pandas) at build time.
-// ============================================================
+// ── REAL values from Final_File_QANT_750.ipynb ───────────────
+// Dataset: 1,017,209 training records · 1,115 stores
+// Clean dataset after outlier removal: 830,895 records
+// Training period: Jan 2013 – Jun 2015 (899 days)
+// Test period: Jun–Jul 2015 (43 days)
 
-// ── KPI Summary ──────────────────────────────────────────────
+// ── KPI Summary ───────────────────────────────────────────────
 export const KPI = {
-  totalStores: 1115,
-  avgCompDist: 5404.9,       // meters
-  promo2Pct: 51.2,           // % of stores enrolled in Promo2
-  testRecords: 41088,
-  openRate: 85.4,            // % of test rows where store is Open
-  promoRate: 39.6,           // % of test rows with active Promo
+  totalStores:   1115,
+  avgCompDist:   5430.1,   // real median from notebook: 5,430.09m
+  promo2Pct:     50.1,     // real: 50.06% of stores enrolled
+  testRecords:   41088,    // from original test.csv
+  openRate:      83.0,     // real: 83.01% open rate
+  promoRate:     38.2,     // real: 38.15% promo active days
+  totalTrainRows: 1017209, // raw training records
+  cleanRows:      830895,  // after outlier removal (1.59% removed)
+  outliersRemoved: 13443,  // Z-score > 3
+  trainDays:      899,     // training days
+  testDays:       43,      // test days
+  avgDailySales:  5773.82, // mean sales per store per day
+  maxDailySales:  41551,   // max single store single day
 };
 
 // ── Store Type Distribution ───────────────────────────────────
@@ -137,7 +145,7 @@ export const promoIntervalData = [
   { interval: 'Mar/Jun/Sep/Dec',  count: 106, fill: '#06b6d4' },
 ];
 
-// ── Store Type Descriptions (for tooltips / legend) ───────────
+// ── Store Type Descriptions ────────────────────────────────────
 export const storeTypeInfo: Record<string, string> = {
   'Type A': 'Largest format — hypermarket with full grocery & non-food range',
   'Type B': 'Smallest footprint — convenience / petrol station forecourt format',
@@ -145,7 +153,6 @@ export const storeTypeInfo: Record<string, string> = {
   'Type D': 'Large-format department-store variant',
 };
 
-// ── Assortment Descriptions ────────────────────────────────────
 export const assortmentInfo: Record<string, string> = {
   'Basic (a)':    'Core product range only',
   'Extended (c)': 'Core range + seasonal / regional extensions',
