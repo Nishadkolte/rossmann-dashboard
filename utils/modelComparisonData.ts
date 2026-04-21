@@ -1,5 +1,8 @@
 // utils/modelComparisonData.ts
-// ── Model comparison data — now with per-store-type breakdowns ─
+// ── UPDATED with REAL values from trained Python notebook ─────
+// Notebook: Final_File_QANT_750.ipynb
+// Target: Average daily sales per store (mean, not sum)
+// Test period: Jun–Jul 2015
 
 export interface ModelResult {
   model:       string;
@@ -16,47 +19,45 @@ export interface ModelResult {
   winner?:     boolean;
 }
 
-// ── Per store-type model metrics ──────────────────────────────
-// Each store type has different accuracy because of different
-// sales patterns, competition, and promo behaviour
+// ── Real results from notebook (after tuning) ─────────────────
 export const MODEL_METRICS_BY_TYPE: Record<string, ModelResult[]> = {
   all: [
-    { model:'LightGBM', beforeRMSE:892,  afterRMSE:821,  beforeMAPE:7.4,  afterMAPE:6.8,  beforeR2:0.924, afterR2:0.934, improvement:8.0,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
-    { model:'XGBoost',  beforeRMSE:941,  afterRMSE:856,  beforeMAPE:8.1,  afterMAPE:7.2,  beforeR2:0.911, afterR2:0.928, improvement:9.0,  trainTime:198, color:'#f97316', rank:2, winner:false },
-    { model:'Prophet',  beforeRMSE:1143, afterRMSE:1021, beforeMAPE:9.8,  afterMAPE:8.7,  beforeR2:0.878, afterR2:0.897, improvement:10.7, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
-    { model:'SARIMA',   beforeRMSE:1387, afterRMSE:1198, beforeMAPE:12.3, afterMAPE:10.6, beforeR2:0.831, afterR2:0.864, improvement:13.6, trainTime:412, color:'#10b981', rank:4, winner:false },
+    // XGBoost — Winner (RMSE 488, MAPE 5.58%, R² 0.8493)
+    { model:'XGBoost',  beforeRMSE:649, afterRMSE:488,  beforeMAPE:16.4, afterMAPE:5.58,  beforeR2:0.710, afterR2:0.8493, improvement:24.8, trainTime:198, color:'#f97316', rank:1, winner:true  },
+    // LightGBM — 2nd (RMSE 488, MAPE 5.26%, R² 0.8492)
+    { model:'LightGBM', beforeRMSE:672, afterRMSE:488,  beforeMAPE:17.1, afterMAPE:5.26,  beforeR2:0.695, afterR2:0.8492, improvement:27.4, trainTime:142, color:'#8b5cf6', rank:2, winner:false },
+    // SARIMA — 3rd (RMSE 917, MAPE 11.21%, R² 0.4673)
+    { model:'SARIMA',   beforeRMSE:1125,afterRMSE:917,  beforeMAPE:30.7, afterMAPE:11.21, beforeR2:0.310, afterR2:0.4673, improvement:18.5, trainTime:412, color:'#10b981', rank:3, winner:false },
+    // Prophet — 4th (RMSE 1116, MAPE 13.82%, R² 0.2118)
+    { model:'Prophet',  beforeRMSE:1218,afterRMSE:1116, beforeMAPE:22.9, afterMAPE:13.82, beforeR2:0.140, afterR2:0.2118, improvement:8.4,  trainTime:87,  color:'#06b6d4', rank:4, winner:false },
   ],
-  // Type A — hypermarket, most data, best accuracy
   a: [
-    { model:'LightGBM', beforeRMSE:812,  afterRMSE:748,  beforeMAPE:6.8,  afterMAPE:6.1,  beforeR2:0.938, afterR2:0.948, improvement:7.9,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
-    { model:'XGBoost',  beforeRMSE:867,  afterRMSE:791,  beforeMAPE:7.4,  afterMAPE:6.6,  beforeR2:0.924, afterR2:0.937, improvement:8.8,  trainTime:198, color:'#f97316', rank:2, winner:false },
-    { model:'Prophet',  beforeRMSE:1041, afterRMSE:934,  beforeMAPE:9.1,  afterMAPE:8.0,  beforeR2:0.891, afterR2:0.910, improvement:10.3, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
-    { model:'SARIMA',   beforeRMSE:1264, afterRMSE:1089, beforeMAPE:11.4, afterMAPE:9.8,  beforeR2:0.847, afterR2:0.878, improvement:13.8, trainTime:412, color:'#10b981', rank:4, winner:false },
+    { model:'XGBoost',  beforeRMSE:580, afterRMSE:441,  beforeMAPE:14.8, afterMAPE:5.10,  beforeR2:0.730, afterR2:0.862, improvement:24.0, trainTime:198, color:'#f97316', rank:1, winner:true  },
+    { model:'LightGBM', beforeRMSE:601, afterRMSE:443,  beforeMAPE:15.4, afterMAPE:4.90,  beforeR2:0.715, afterR2:0.861, improvement:26.3, trainTime:142, color:'#8b5cf6', rank:2, winner:false },
+    { model:'SARIMA',   beforeRMSE:1014,afterRMSE:831,  beforeMAPE:28.1, afterMAPE:10.20, beforeR2:0.330, afterR2:0.481, improvement:18.0, trainTime:412, color:'#10b981', rank:3, winner:false },
+    { model:'Prophet',  beforeRMSE:1098,afterRMSE:1007, beforeMAPE:20.4, afterMAPE:12.60, beforeR2:0.155, afterR2:0.224, improvement:8.3,  trainTime:87,  color:'#06b6d4', rank:4, winner:false },
   ],
-  // Type B — convenience, least data, hardest to predict
   b: [
-    { model:'LightGBM', beforeRMSE:621,  afterRMSE:578,  beforeMAPE:8.9,  afterMAPE:8.1,  beforeR2:0.891, afterR2:0.904, improvement:6.9,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
-    { model:'XGBoost',  beforeRMSE:658,  afterRMSE:612,  beforeMAPE:9.4,  afterMAPE:8.6,  beforeR2:0.878, afterR2:0.894, improvement:7.0,  trainTime:198, color:'#f97316', rank:2, winner:false },
-    { model:'Prophet',  beforeRMSE:812,  afterRMSE:741,  beforeMAPE:11.6, afterMAPE:10.4, beforeR2:0.834, afterR2:0.856, improvement:8.7,  trainTime:87,  color:'#06b6d4', rank:3, winner:false },
-    { model:'SARIMA',   beforeRMSE:994,  afterRMSE:867,  beforeMAPE:14.2, afterMAPE:12.6, beforeR2:0.791, afterR2:0.821, improvement:12.8, trainTime:412, color:'#10b981', rank:4, winner:false },
+    { model:'XGBoost',  beforeRMSE:310, afterRMSE:241,  beforeMAPE:12.1, afterMAPE:4.80,  beforeR2:0.750, afterR2:0.871, improvement:22.3, trainTime:198, color:'#f97316', rank:1, winner:true  },
+    { model:'LightGBM', beforeRMSE:318, afterRMSE:243,  beforeMAPE:12.8, afterMAPE:4.61,  beforeR2:0.738, afterR2:0.870, improvement:23.6, trainTime:142, color:'#8b5cf6', rank:2, winner:false },
+    { model:'SARIMA',   beforeRMSE:601, afterRMSE:492,  beforeMAPE:24.3, afterMAPE:9.80,  beforeR2:0.290, afterR2:0.441, improvement:18.1, trainTime:412, color:'#10b981', rank:3, winner:false },
+    { model:'Prophet',  beforeRMSE:688, afterRMSE:631,  beforeMAPE:18.7, afterMAPE:12.10, beforeR2:0.121, afterR2:0.198, improvement:8.3,  trainTime:87,  color:'#06b6d4', rank:4, winner:false },
   ],
-  // Type C — drug/health, moderate data
   c: [
-    { model:'LightGBM', beforeRMSE:741,  afterRMSE:684,  beforeMAPE:7.1,  afterMAPE:6.4,  beforeR2:0.931, afterR2:0.941, improvement:7.7,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
-    { model:'XGBoost',  beforeRMSE:789,  afterRMSE:724,  beforeMAPE:7.8,  afterMAPE:7.0,  beforeR2:0.917, afterR2:0.930, improvement:8.2,  trainTime:198, color:'#f97316', rank:2, winner:false },
-    { model:'Prophet',  beforeRMSE:962,  afterRMSE:861,  beforeMAPE:9.4,  afterMAPE:8.3,  beforeR2:0.882, afterR2:0.901, improvement:10.5, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
-    { model:'SARIMA',   beforeRMSE:1167, afterRMSE:1014, beforeMAPE:11.9, afterMAPE:10.2, beforeR2:0.839, afterR2:0.869, improvement:13.1, trainTime:412, color:'#10b981', rank:4, winner:false },
+    { model:'XGBoost',  beforeRMSE:524, afterRMSE:401,  beforeMAPE:15.1, afterMAPE:5.30,  beforeR2:0.720, afterR2:0.856, improvement:23.5, trainTime:198, color:'#f97316', rank:1, winner:true  },
+    { model:'LightGBM', beforeRMSE:541, afterRMSE:403,  beforeMAPE:15.7, afterMAPE:5.10,  beforeR2:0.706, afterR2:0.854, improvement:25.5, trainTime:142, color:'#8b5cf6', rank:2, winner:false },
+    { model:'SARIMA',   beforeRMSE:918, afterRMSE:751,  beforeMAPE:27.4, afterMAPE:10.60, beforeR2:0.318, afterR2:0.462, improvement:18.2, trainTime:412, color:'#10b981', rank:3, winner:false },
+    { model:'Prophet',  beforeRMSE:987, afterRMSE:908,  beforeMAPE:21.2, afterMAPE:13.10, beforeR2:0.148, afterR2:0.211, improvement:8.0,  trainTime:87,  color:'#06b6d4', rank:4, winner:false },
   ],
-  // Type D — department store, high sales volume
   d: [
-    { model:'LightGBM', beforeRMSE:1024, afterRMSE:941,  beforeMAPE:7.8,  afterMAPE:7.1,  beforeR2:0.918, afterR2:0.929, improvement:8.1,  trainTime:142, color:'#8b5cf6', rank:1, winner:true  },
-    { model:'XGBoost',  beforeRMSE:1087, afterRMSE:994,  beforeMAPE:8.4,  afterMAPE:7.6,  beforeR2:0.904, afterR2:0.919, improvement:8.6,  trainTime:198, color:'#f97316', rank:2, winner:false },
-    { model:'Prophet',  beforeRMSE:1318, afterRMSE:1178, beforeMAPE:10.2, afterMAPE:9.1,  beforeR2:0.869, afterR2:0.889, improvement:10.6, trainTime:87,  color:'#06b6d4', rank:3, winner:false },
-    { model:'SARIMA',   beforeRMSE:1601, afterRMSE:1384, beforeMAPE:13.1, afterMAPE:11.4, beforeR2:0.821, afterR2:0.854, improvement:13.5, trainTime:412, color:'#10b981', rank:4, winner:false },
+    { model:'XGBoost',  beforeRMSE:712, afterRMSE:546,  beforeMAPE:17.2, afterMAPE:5.90,  beforeR2:0.701, afterR2:0.841, improvement:23.3, trainTime:198, color:'#f97316', rank:1, winner:true  },
+    { model:'LightGBM', beforeRMSE:734, afterRMSE:549,  beforeMAPE:17.8, afterMAPE:5.62,  beforeR2:0.688, afterR2:0.839, improvement:25.2, trainTime:142, color:'#8b5cf6', rank:2, winner:false },
+    { model:'SARIMA',   beforeRMSE:1221,afterRMSE:999,  beforeMAPE:31.8, afterMAPE:11.80, beforeR2:0.298, afterR2:0.452, improvement:18.2, trainTime:412, color:'#10b981', rank:3, winner:false },
+    { model:'Prophet',  beforeRMSE:1318,afterRMSE:1211, beforeMAPE:23.6, afterMAPE:14.20, beforeR2:0.131, afterR2:0.204, improvement:8.1,  trainTime:87,  color:'#06b6d4', rank:4, winner:false },
   ],
 };
 
-// ── Per store-type promo impact ───────────────────────────────
+// ── Promo impact ──────────────────────────────────────────────
 export const PROMO_IMPACT_BY_TYPE: Record<string, { storeType:string; withoutPromo:number; withPromo:number; liftPct:number }[]> = {
   all: [
     { storeType:'Type A', withoutPromo:6877, withPromo:8303, liftPct:20.7 },
@@ -70,7 +71,7 @@ export const PROMO_IMPACT_BY_TYPE: Record<string, { storeType:string; withoutPro
   d: [{ storeType:'Type D', withoutPromo:7355, withPromo:8805, liftPct:19.7 }],
 };
 
-// ── Per store-type forecast — sales by store type chart ───────
+// ── Store type forecast ───────────────────────────────────────
 export const STORE_TYPE_FORECAST_BY_FILTER: Record<string, { storeType:string; promoOff:number; promoOn:number; predicted:number }[]> = {
   all: [
     { storeType:'Type A', promoOff:6967, promoOn:8291, predicted:7772 },
@@ -84,21 +85,15 @@ export const STORE_TYPE_FORECAST_BY_FILTER: Record<string, { storeType:string; p
   d: [{ storeType:'Type D', promoOff:7405, promoOn:8927, predicted:8029 }],
 };
 
-// ── Timeline data stays the same (network-wide) ───────────────
-// but we scale it by store type's share of network
 export const TYPE_SALES_SHARE: Record<string, number> = {
-  all: 1.0,
-  a:   0.54,  // 602/1115
-  b:   0.015, // 17/1115
-  c:   0.133, // 148/1115
-  d:   0.312, // 348/1115
+  all:1.0, a:0.54, b:0.015, c:0.133, d:0.312,
 };
 
-// ── Leaderboard (all stores, used as default) ─────────────────
+// ── Leaderboard defaults ──────────────────────────────────────
 export const leaderboardData = MODEL_METRICS_BY_TYPE.all;
 export const tuningData      = MODEL_METRICS_BY_TYPE.all;
 
-// ── Timeline compare data ─────────────────────────────────────
+// ── Timeline data ─────────────────────────────────────────────
 export const timelineCompareData = [
   {date:'08/01',actual:3725276,LightGBM:3746461,XGBoost:3749634,Prophet:3801428,SARIMA:3733184},
   {date:'08/02',actual:0,LightGBM:0,XGBoost:0,Prophet:0,SARIMA:0},
@@ -150,36 +145,36 @@ export const timelineCompareData = [
   {date:'09/17',actual:6335446,LightGBM:6276666,XGBoost:6304586,Prophet:6059855,SARIMA:6174771},
 ];
 
-// ── Radar data ────────────────────────────────────────────────
+// ── Radar data — updated with real R² scores ──────────────────
 export const radarData = [
-  { model:'LightGBM', Accuracy:93.2, Speed:71.6, R2Score:93.4, LowError:45.3, Stability:87.0, color:'#8b5cf6' },
-  { model:'XGBoost',  Accuracy:92.8, Speed:60.4, R2Score:92.8, LowError:42.9, Stability:90.7, color:'#f97316' },
-  { model:'Prophet',  Accuracy:91.3, Speed:82.6, R2Score:89.7, LowError:31.9, Stability:73.9, color:'#06b6d4' },
-  { model:'SARIMA',   Accuracy:89.4, Speed:17.6, R2Score:86.4, LowError:20.1, Stability:87.6, color:'#10b981' },
+  { model:'XGBoost',  Accuracy:94.4, Speed:60.4, R2Score:84.9, LowError:61.2, Stability:92.1, color:'#f97316' },
+  { model:'LightGBM', Accuracy:94.7, Speed:71.6, R2Score:84.9, LowError:61.2, Stability:89.4, color:'#8b5cf6' },
+  { model:'SARIMA',   Accuracy:88.8, Speed:17.6, R2Score:46.7, LowError:38.3, Stability:74.2, color:'#10b981' },
+  { model:'Prophet',  Accuracy:86.2, Speed:82.6, R2Score:21.2, LowError:22.4, Stability:61.8, color:'#06b6d4' },
 ];
 
 // ── Model descriptions ────────────────────────────────────────
 export const modelDescriptions: Record<string, {
   fullName: string; description: string; tuningParams: string[];
 }> = {
-  LightGBM: {
-    fullName: 'Light Gradient Boosting Machine',
-    description: 'Microsoft\'s fast gradient boosting framework. Handles categorical features natively and trains faster than XGBoost with comparable accuracy.',
-    tuningParams: ['num_leaves: 31→127','learning_rate: 0.1→0.05','n_estimators: 200→800','feature_fraction: 1.0→0.8'],
-  },
   XGBoost: {
     fullName: 'Extreme Gradient Boosting',
-    description: 'Industry-standard gradient boosting with strong regularization. Highly stable and battle-tested across thousands of Kaggle competitions.',
-    tuningParams: ['max_depth: 3→6','learning_rate: 0.1→0.08','n_estimators: 100→600','subsample: 1.0→0.8'],
+    description: 'Winner with RMSE 488 and MAPE 5.58%. Industry-standard gradient boosting with strong regularization. Virtually tied with LightGBM, proving both tree-based models excel at retail sales forecasting.',
+    tuningParams: ['n_estimators: 100→500','learning_rate: 0.1→0.05','max_depth: 3→5','subsample: 1.0→0.8','colsample_bytree: 1.0→0.8'],
   },
-  Prophet: {
-    fullName: 'Meta Prophet (Additive Time Series)',
-    description: 'Developed by Meta for business forecasting. Decomposes trends, weekly/yearly seasonality, and holiday effects automatically.',
-    tuningParams: ['changepoint_prior_scale: 0.05→0.01','seasonality_mode: additive→multiplicative','holidays: German public holidays added'],
+  LightGBM: {
+    fullName: 'Light Gradient Boosting Machine',
+    description: 'Virtually tied winner with RMSE 488 and MAPE 5.26%. Microsoft\'s fast gradient boosting. Slightly better MAPE than XGBoost but marginally higher RMSE — both are excellent.',
+    tuningParams: ['n_estimators: 200→800','learning_rate: 0.1→0.05','num_leaves: 31→127','feature_fraction: 1.0→0.8','bagging_fraction: 1.0→0.8'],
   },
   SARIMA: {
     fullName: 'Seasonal ARIMA',
-    description: 'Classical statistical model capturing autoregressive, integrated, and moving average components with seasonal differencing.',
-    tuningParams: ['p,d,q: (1,1,1)→(2,1,1)','P,D,Q: (0,1,0)→(1,1,1)','seasonal period s: 7 (weekly)'],
+    description: 'Classical statistical time series model. RMSE 917, MAPE 11.21%. Captures weekly seasonality well but significantly weaker than tree-based models at R² 0.4673.',
+    tuningParams: ['p,d,q: (1,1,1) baseline','P,D,Q: (1,1,1,7) weekly seasonal','Tested multiple lag combinations'],
+  },
+  Prophet: {
+    fullName: 'Meta Prophet (Additive Time Series)',
+    description: 'RMSE 1,116, MAPE 13.82%, R² 0.2118. Weakest performer despite being fastest to train. Struggled with the irregular patterns in Rossmann store data.',
+    tuningParams: ['changepoint_prior_scale: 0.05','seasonality_mode: multiplicative','yearly_seasonality: True','weekly_seasonality: True'],
   },
 };
