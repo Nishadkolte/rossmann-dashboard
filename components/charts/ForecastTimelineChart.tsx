@@ -22,9 +22,7 @@ interface Props {
 // ── Format euros properly based on magnitude ─────────────────
 function fmtEuro(v: number): string {
   if (v === 0) return '€0';
-  if (v >= 1_000_000) return `€${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `€${(v / 1_000).toFixed(0)}k`;
-  return `€${v.toFixed(0)}`;
+  return '€' + Math.round(v).toLocaleString('en-US');
 }
 
 interface TooltipPayloadItem {
@@ -86,7 +84,7 @@ export default function ForecastTimelineChart({ data, showPromo }: Props) {
           axisLine={false}
           tickLine={false}
           tickFormatter={fmtEuro}
-          width={72}
+          width={90}
         />
 
         <Tooltip content={<CustomTooltip />} />
