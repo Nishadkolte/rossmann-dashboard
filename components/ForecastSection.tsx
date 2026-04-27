@@ -33,12 +33,12 @@ export default function ForecastSection() {
         <div>
           <h2 className="text-lg font-semibold text-slate-100">
             AI Sales Forecast
-            <span className="ml-2 badge bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs align-middle">
-              LightGBM
+            <span className="ml-2 badge bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs align-middle">
+              XGBoost 🏆
             </span>
           </h2>
           <p className="text-sm text-slate-400 mt-0.5">
-            Machine learning predictions for Aug–Sep 2015 · Trained on 1M+ historical records
+            Machine learning predictions · Trained on 830,895 records · Jan 2013–Jun 2015 · Tested Jun–Jul 2015 (43 days)
           </p>
         </div>
       </div>
@@ -46,12 +46,12 @@ export default function ForecastSection() {
       {/* ── Model Stats Banner ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
         {[
-          { label: 'Algorithm',     value: modelStats.algorithm,    icon: <Brain size={13} />,    color: 'text-purple-400' },
-          { label: 'R² Score',      value: modelStats.r2,           icon: <TrendingUp size={13} />, color: 'text-emerald-400' },
-          { label: 'MAPE',          value: modelStats.mape,         icon: <Zap size={13} />,       color: 'text-amber-400' },
-          { label: 'RMSE',          value: `€${modelStats.rmse}`,   icon: <Info size={13} />,      color: 'text-blue-400' },
-          { label: 'Features',      value: `${modelStats.features}`, icon: <Store size={13} />,    color: 'text-cyan-400' },
-          { label: 'Training Rows', value: modelStats.trainSize,    icon: <Calendar size={13} />, color: 'text-rose-400' },
+          { label: 'Winner',        value: modelStats.algorithm,   icon: <Brain size={13} />,    color: 'text-amber-400'   },
+          { label: 'R² Score',      value: modelStats.r2,          icon: <TrendingUp size={13} />,color: 'text-emerald-400' },
+          { label: 'MAPE',          value: modelStats.mape,        icon: <Zap size={13} />,       color: 'text-blue-400'    },
+          { label: 'RMSE',          value: `€${modelStats.rmse}`,  icon: <Info size={13} />,      color: 'text-purple-400'  },
+          { label: 'Features',      value: `${modelStats.features}`,icon:<Store size={13} />,     color: 'text-cyan-400'    },
+          { label: 'Training Rows', value: modelStats.trainSize,   icon: <Calendar size={13} />,  color: 'text-rose-400'    },
         ].map((s) => (
           <div key={s.label} className="card text-center py-3">
             <p className={`flex items-center justify-center gap-1 text-xs font-medium mb-1 ${s.color}`}>
@@ -64,14 +64,14 @@ export default function ForecastSection() {
 
       {/* ── Chart 1: Daily Sales Forecast Timeline ── */}
       <div className="card mb-6">
-        <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
           <div>
             <p className="card-header flex items-center gap-2">
               <TrendingUp size={14} className="text-emerald-400" />
               Chart 1 — Daily Sales Forecast Timeline
             </p>
             <p className="text-xs text-slate-500 mt-0.5">
-              Network-wide actual vs predicted sales · Aug 1 – Sep 17, 2015
+              Avg daily sales per store (€) · Actual vs XGBoost predicted · Jun 19 – Jul 31, 2015 (43 test days)
             </p>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
@@ -88,8 +88,8 @@ export default function ForecastSection() {
         </div>
         <ForecastTimelineChart data={timelineData} showPromo={showPromo} />
         <div className="flex flex-wrap gap-4 mt-4 text-xs text-slate-500">
-          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-emerald-400 inline-block rounded" /> Actual Network Sales</span>
-          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-blue-400 inline-block rounded border-dashed border-b-2" /> Predicted (LightGBM)</span>
+          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-emerald-400 inline-block rounded" /> Actual Sales per Store</span>
+          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-blue-400 inline-block rounded" /> Predicted (XGBoost — MAPE 5.58%)</span>
           {showPromo && <span className="flex items-center gap-1.5"><span className="w-3 h-3 bg-amber-500/20 inline-block rounded" /> Promo Days</span>}
         </div>
       </div>
@@ -104,7 +104,7 @@ export default function ForecastSection() {
             Chart 2 — Sales Forecast by Store Type
           </p>
           <p className="text-xs text-slate-500 mb-4">
-            Predicted daily avg sales per store · Promo OFF vs ON vs Forecast
+            Predicted daily avg sales per store (€) · Promo OFF vs ON vs Forecast
           </p>
           <StoreTypeForecastChart data={storeTypeForecastData} />
         </div>
@@ -129,7 +129,7 @@ export default function ForecastSection() {
           Chart 3 — Weekly Sales Heatmap
         </p>
         <p className="text-xs text-slate-500 mb-5">
-          Predicted avg daily sales per store by week and day of week · Darker = higher sales · 🔒 = Sunday (closed)
+          Predicted avg daily sales per store (€) by week and day · Darker = higher sales · 🔒 = Sunday (closed)
         </p>
         <WeeklyHeatmapChart data={heatmapData} />
       </div>
@@ -141,34 +141,11 @@ export default function ForecastSection() {
           Chart 5 — Sales Prediction by Individual Store
         </p>
         <p className="text-xs text-slate-500 mb-2">
-          Top 20 stores by predicted daily sales · Filter by type, promo status, or search by store ID
+          Top 20 stores by predicted daily sales (€) · Filter by type, promo status, or search by store ID
         </p>
         <StorePredictionChart data={storePredictionsData} />
       </div>
 
-      {/* ── Python API instructions ── */}
-      <div className="mt-6 card border border-blue-500/20 bg-blue-500/5">
-        <div className="flex items-start gap-3">
-          <Brain size={18} className="text-blue-400 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-semibold text-slate-200 mb-1">
-              🐍 Connect to Live Python API (Optional Upgrade)
-            </p>
-            <p className="text-xs text-slate-400 mb-3">
-              The charts above use pre-computed predictions. To connect a live LightGBM model trained on your real{' '}
-              <code className="bg-slate-700 px-1 rounded text-blue-300">train.csv</code>, deploy the included Python FastAPI
-              backend to Railway and set your environment variable:
-            </p>
-            <div className="bg-slate-900 rounded-lg p-3 font-mono text-xs text-emerald-400 border border-slate-700">
-              <p className="text-slate-500 mb-1"># In Vercel dashboard → Environment Variables → Add:</p>
-              <p>NEXT_PUBLIC_API_URL=https://your-railway-app.railway.app</p>
-            </div>
-            <p className="text-xs text-slate-500 mt-2">
-              See <code className="text-blue-300">api/README.md</code> for full deployment steps.
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

@@ -8,34 +8,42 @@ import {
 } from 'recharts';
 
 interface DataPoint {
-  date: string;
-  actual: number;
+  date:     string;
+  actual:   number;
   LightGBM: number;
-  XGBoost: number;
-  Prophet: number;
-  SARIMA: number;
+  XGBoost:  number;
+  Prophet:  number;
+  SARIMA:   number;
 }
 
 interface Props { data: DataPoint[] }
 
+// ── Format euros based on magnitude ─────────────────────────
+function fmtEuro(v: number): string {
+  if (v === 0) return '€0';
+  if (v >= 1_000_000) return `€${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000) return `€${(v / 1_000).toFixed(0)}k`;
+  return `€${v.toFixed(0)}`;
+}
+
 const MODELS = [
-  { key: 'actual',   label: 'Actual Sales', color: '#ffffff', dash: '' },
-  { key: 'LightGBM', label: 'LightGBM 🥇',  color: '#8b5cf6', dash: '' },
-  { key: 'XGBoost',  label: 'XGBoost',       color: '#f97316', dash: '6 3' },
+  { key: 'actual',   label: 'Actual Sales',  color: '#ffffff', dash: ''    },
+  { key: 'XGBoost',  label: 'XGBoost 🏆',    color: '#f59e0b', dash: ''    },
+  { key: 'LightGBM', label: 'LightGBM',      color: '#8b5cf6', dash: '6 3' },
   { key: 'Prophet',  label: 'Prophet',        color: '#06b6d4', dash: '4 4' },
   { key: 'SARIMA',   label: 'SARIMA',         color: '#10b981', dash: '2 3' },
 ];
 
 interface TooltipItem {
-  name: string;
+  name:  string;
   value: number;
   color: string;
 }
 
 function CustomTooltip({ active, payload, label }: {
-  active?: boolean;
+  active?:  boolean;
   payload?: TooltipItem[];
-  label?: string;
+  label?:   string;
 }) {
   if (!active || !payload?.length) return null;
   return (
@@ -43,7 +51,7 @@ function CustomTooltip({ active, payload, label }: {
       <p className="text-slate-300 font-bold mb-2">📅 {label}</p>
       {payload.filter(p => p.value > 0).map(p => (
         <p key={p.name} style={{ color: p.color }} className="mb-1">
-          {p.name}: <span className="font-semibold">€{(p.value/1_000_000).toFixed(2)}M</span>
+          {p.name}: <span className="font-semibold">{fmtEuro(p.value)}</span>
         </p>
       ))}
     </div>
@@ -52,7 +60,7 @@ function CustomTooltip({ active, payload, label }: {
 
 export default function ModelTimelineChart({ data }: Props) {
   const [visible, setVisible] = useState<Record<string, boolean>>({
-    actual: true, LightGBM: true, XGBoost: true, Prophet: true, SARIMA: true,
+    actual: true, XGBoost: true, LightGBM: true, Prophet: true, SARIMA: true,
   });
 
   const toggle = (key: string) =>
@@ -66,12 +74,11 @@ export default function ModelTimelineChart({ data }: Props) {
           <button
             key={m.key}
             onClick={() => toggle(m.key)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium
-                        border transition-all duration-150
-                        ${visible[m.key]
-                          ? 'border-transparent text-white'
-                          : 'border-slate-600 text-slate-500 bg-transparent'}`}
-            style={visible[m.key] ? { backgroundColor: m.color + '30', borderColor: m.color, color: m.color } : {}}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium
+                       border transition-all duration-150"
+            style={visible[m.key]
+              ? { backgroundColor: m.color + '30', borderColor: m.color, color: m.color }
+              : { borderColor: '#475569', color: '#475569', background: 'transparent' }}
           >
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: visible[m.key] ? m.color : '#475569' }} />
             {m.label}
@@ -80,14 +87,27 @@ export default function ModelTimelineChart({ data }: Props) {
       </div>
 
       <ResponsiveContainer width="100%" height={340}>
-        <LineChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+        <LineChart data={data} margin={{ top: 5, right: 10, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-          <XAxis dataKey="date" tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={false} tickLine={false} interval={5} />
-          <YAxis
-            tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={false} tickLine={false}
-            tickFormatter={v => `€${(v/1_000_000).toFixed(1)}M`}
+
+          <XAxis
+            dataKey="date"
+            tick={{ fill: '#94a3b8', fontSize: 10 }}
+            axisLine={false}
+            tickLine={false}
+            interval={4}
           />
+
+          <YAxis
+            tick={{ fill: '#94a3b8', fontSize: 10 }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={fmtEuro}
+            width={72}
+          />
+
           <Tooltip content={<CustomTooltip />} />
+
           {MODELS.map(m => visible[m.key] && (
             <Line
               key={m.key}
@@ -104,6 +124,11 @@ export default function ModelTimelineChart({ data }: Props) {
           ))}
         </LineChart>
       </ResponsiveContainer>
+
+      {/* Legend note */}
+      <p className="text-xs text-slate-500 mt-2 text-center">
+        Values show average daily sales per store (€) · Test period: Jun–Jul 2015
+      </p>
     </div>
   );
 }

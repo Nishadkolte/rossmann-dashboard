@@ -22,7 +22,6 @@ import {
 
 type Metric = 'RMSE' | 'MAPE' | 'R2';
 
-// ── Store type labels ─────────────────────────────────────────
 const TYPE_LABELS: Record<string, string> = {
   all: 'All Store Types',
   a:   'Type A — Hypermarket',
@@ -32,47 +31,40 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  all: '#3b82f6',
-  a:   '#8b5cf6',
-  b:   '#f59e0b',
-  c:   '#06b6d4',
-  d:   '#10b981',
+  all: '#3b82f6', a: '#8b5cf6', b: '#f59e0b', c: '#06b6d4', d: '#10b981',
 };
 
 interface Props {
-  storeTypeFilter: string; // 'all' | 'a' | 'b' | 'c' | 'd'
+  storeTypeFilter: string;
 }
 
 export default function ModelComparisonSection({ storeTypeFilter }: Props) {
-  const [tuningMetric,   setTuningMetric]   = useState<Metric>('RMSE');
-  const [expandedModel,  setExpandedModel]  = useState<string | null>(null);
+  const [tuningMetric,  setTuningMetric]  = useState<Metric>('RMSE');
+  const [expandedModel, setExpandedModel] = useState<string | null>(null);
 
-  // ── Derive filtered data ──────────────────────────────────
   const activeType = storeTypeFilter === 'all' ? 'all' : storeTypeFilter;
-
   const filteredMetrics = useMemo(() =>
     MODEL_METRICS_BY_TYPE[activeType] ?? MODEL_METRICS_BY_TYPE.all,
     [activeType]
   );
 
-  // Scale timeline by store type share
   const share = TYPE_SALES_SHARE[activeType] ?? 1;
   const filteredTimeline = useMemo(() =>
     timelineCompareData.map(row => ({
       ...row,
-      actual:    Math.round(row.actual    * share),
-      LightGBM:  Math.round(row.LightGBM  * share),
-      XGBoost:   Math.round(row.XGBoost   * share),
-      Prophet:   Math.round(row.Prophet   * share),
-      SARIMA:    Math.round(row.SARIMA    * share),
+      actual:   Math.round(row.actual   * share),
+      LightGBM: Math.round(row.LightGBM * share),
+      XGBoost:  Math.round(row.XGBoost  * share),
+      Prophet:  Math.round(row.Prophet  * share),
+      SARIMA:   Math.round(row.SARIMA   * share),
     })),
     [share]
   );
 
-  const winner      = filteredMetrics.find(m => m.winner);
-  const typeLabel   = TYPE_LABELS[activeType] ?? 'All Store Types';
-  const typeColor   = TYPE_COLORS[activeType] ?? '#3b82f6';
-  const isFiltered  = activeType !== 'all';
+  const winner     = filteredMetrics.find(m => m.winner);
+  const typeLabel  = TYPE_LABELS[activeType] ?? 'All Store Types';
+  const typeColor  = TYPE_COLORS[activeType] ?? '#3b82f6';
+  const isFiltered = activeType !== 'all';
 
   return (
     <section id="models" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,7 +82,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
             </span>
           </h2>
           <p className="text-sm text-slate-400 mt-0.5">
-            LightGBM · XGBoost · Prophet · SARIMA — benchmarked head-to-head
+            XGBoost · LightGBM · SARIMA · Prophet — trained on 830,895 records · tested Jun–Jul 2015 (43 days)
           </p>
         </div>
       </div>
@@ -108,7 +100,6 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
             </p>
             <p className="text-xs text-slate-400 mt-0.5">
               All 4 model metrics below are specific to {typeLabel} stores only.
-              Change the Store Type filter above to compare different segments.
             </p>
           </div>
           <div className="text-right shrink-0">
@@ -122,7 +113,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
 
       {/* ── Winner Banner ── */}
       {winner && (
-        <div className="card border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-blue-500/5 mb-6">
+        <div className="card border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-blue-500/5 mb-6">
           <div className="flex flex-wrap items-center gap-4">
             <div className="text-4xl">🏆</div>
             <div>
@@ -130,13 +121,15 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
                 Winning Model {isFiltered ? `— ${typeLabel}` : ''}
               </p>
               <p className="text-2xl font-extrabold text-white">{winner.model}</p>
-              <p className="text-sm text-slate-400">Lowest RMSE after hyperparameter tuning</p>
+              <p className="text-sm text-slate-400">
+                Lowest RMSE after hyperparameter tuning · 830,895 training records
+              </p>
             </div>
             <div className="flex gap-6 ml-auto">
               {[
-                { label:'RMSE', value:`€${winner.afterRMSE}`,         color:'text-purple-400' },
-                { label:'MAPE', value:`${winner.afterMAPE}%`,         color:'text-blue-400'   },
-                { label:'R²',   value:winner.afterR2.toFixed(3),       color:'text-emerald-400'},
+                { label: 'RMSE', value: `€${winner.afterRMSE}`,       color: 'text-amber-400'   },
+                { label: 'MAPE', value: `${winner.afterMAPE}%`,        color: 'text-blue-400'    },
+                { label: 'R²',   value: winner.afterR2.toFixed(4),     color: 'text-emerald-400' },
               ].map(s => (
                 <div key={s.label} className="text-center">
                   <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
@@ -152,7 +145,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
       <div className="card mb-6">
         <p className="card-header flex items-center gap-2">
           <Trophy size={14} className="text-amber-400" />
-          Model Leaderboard
+          Model Leaderboard — After Hyperparameter Tuning
           {isFiltered && (
             <span className="ml-1 badge text-xs px-2 py-0.5"
               style={{ background: typeColor + '20', color: typeColor, border: `1px solid ${typeColor}40` }}>
@@ -161,8 +154,8 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
           )}
         </p>
         <p className="text-xs text-slate-500 mb-5">
-          Strikethrough = pre-tuning baseline · All metrics on Aug–Sep 2015 test set
-          {isFiltered ? ` · ${typeLabel} stores only` : ''}
+          Strikethrough = pre-tuning baseline · Test set: Jun 19 – Jul 31, 2015 (43 days)
+          {isFiltered ? ` · ${typeLabel} stores only` : ' · All 1,115 stores'}
         </p>
         <ModelLeaderboard data={filteredMetrics} />
       </div>
@@ -174,14 +167,8 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
             <p className="card-header flex items-center gap-2">
               <Zap size={14} className="text-blue-400" />
               Hyperparameter Tuning Impact
-              {isFiltered && (
-                <span className="badge text-xs px-2 py-0.5"
-                  style={{ background: typeColor + '20', color: typeColor }}>
-                  {typeLabel}
-                </span>
-              )}
             </p>
-            <p className="text-xs text-slate-500">Before vs after tuning — all 4 models</p>
+            <p className="text-xs text-slate-500">Before vs after tuning — XGBoost & LightGBM improved by ~50%</p>
           </div>
           <div className="flex rounded-lg overflow-hidden border border-slate-600">
             {(['RMSE','MAPE','R2'] as Metric[]).map(m => (
@@ -200,7 +187,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
       <div className="card mb-6">
         <p className="card-header flex items-center gap-2">
           <TrendingDown size={14} className="text-emerald-400" />
-          All 4 Models vs Actual Sales
+          All 4 Models vs Actual Sales — Jun 19 – Jul 31, 2015
           {isFiltered && (
             <span className="badge text-xs px-2 py-0.5"
               style={{ background: typeColor + '20', color: typeColor }}>
@@ -209,10 +196,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
           )}
         </p>
         <p className="text-xs text-slate-500 mb-4">
-          Toggle models on/off ·
-          {isFiltered
-            ? ` Sales scaled to ${typeLabel} network share (${Math.round(share * 100)}% of total)`
-            : ' LightGBM (solid purple) tracks actual most closely'}
+          Values = avg daily sales per store (€) · Toggle models on/off · XGBoost tracks actual most closely
         </p>
         <ModelTimelineChart data={filteredTimeline} />
       </div>
@@ -225,7 +209,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
             Multi-Dimensional Performance Radar
           </p>
           <p className="text-xs text-slate-500 mb-4">
-            5 dimensions: Accuracy · Speed · R² · Low Error · Stability
+            5 dimensions: Accuracy · Speed · R² · Low Error · Stability (higher = better)
           </p>
           <ModelRadarChart data={radarData} />
         </div>
@@ -235,7 +219,7 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
             <Info size={14} className="text-cyan-400" />
             Model Descriptions & Tuned Parameters
           </p>
-          <p className="text-xs text-slate-500 mb-4">Click any model to expand</p>
+          <p className="text-xs text-slate-500 mb-4">Click any model to expand details</p>
           <div className="flex flex-col gap-3">
             {filteredMetrics.map(m => {
               const desc   = modelDescriptions[m.model];
@@ -251,9 +235,9 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
                       <p className="text-sm font-semibold text-slate-200">{m.model}</p>
                       <p className="text-xs text-slate-500">{desc?.fullName}</p>
                     </div>
-                    <div className="flex gap-3 text-xs">
-                      <span className="text-purple-400 font-medium">RMSE: €{m.afterRMSE}</span>
-                      <span className="text-slate-600">{isOpen ? '▲' : '▼'}</span>
+                    <div className="flex gap-3 text-xs items-center">
+                      <span className="text-amber-400 font-medium">RMSE: €{m.afterRMSE}</span>
+                      <span className="text-slate-600 text-sm">{isOpen ? '▲' : '▼'}</span>
                     </div>
                   </div>
                   {isOpen && (
@@ -283,19 +267,18 @@ export default function ModelComparisonSection({ storeTypeFilter }: Props) {
       <div className="card border border-amber-500/20 bg-amber-500/5">
         <p className="text-sm font-semibold text-slate-200 mb-4 flex items-center gap-2">
           <Trophy size={15} className="text-amber-400" />
-          Key Findings
-          {isFiltered && <span style={{ color: typeColor }}>— {typeLabel}</span>}
+          Key Findings — Real Results from Final_File_QANT_750.ipynb
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { icon:'🥇', title:`LightGBM wins${isFiltered ? ` for ${typeLabel}` : ''}`,
-              body: `Lowest RMSE (€${winner?.afterRMSE ?? 821}) and MAPE (${winner?.afterMAPE ?? 6.8}%) after tuning.` },
-            { icon:'⚡', title:'Tuning pays off',
-              body:'All 4 models improved after hyperparameter optimization. SARIMA gained the most % reduction.' },
-            { icon:'📅', title:'Prophet handles seasonality',
-              body:'Correctly captures Sunday-closure patterns and German public holidays without manual features.' },
-            { icon:'🐢', title:'SARIMA is slowest',
-              body:'SARIMA took 412 seconds to train — nearly 3x slower than LightGBM — with the highest error.' },
+            { icon:'🥇', title:'XGBoost Wins',
+              body:`RMSE €488.02, MAPE 5.58%, R² 0.8493 — wins over LightGBM by just 0.14 RMSE. Predictions within €322 of actual daily sales.` },
+            { icon:'⚡', title:'50% RMSE Reduction',
+              body:'Hyperparameter tuning cut RMSE by 50.5% for XGBoost and 50.4% for LightGBM — default params are insufficient.' },
+            { icon:'📅', title:'Prophet Weakest',
+              body:'Prophet R² 0.2118 — explains only 21.2% of variance. Despite being fastest to train (87s), it is least accurate.' },
+            { icon:'🐢', title:'SARIMA Slowest',
+              body:'SARIMA took 412 seconds — nearly 3× slower than LightGBM — with AIC 14,720.97 and RMSE €917.46.' },
           ].map(f => (
             <div key={f.title} className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50">
               <p className="text-xl mb-2">{f.icon}</p>
